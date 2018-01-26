@@ -2,11 +2,13 @@
 
 namespace BashSoft
 {
-    public class Program
+    public class BashSoftProgram
     {
         public static void Main(string[] args)
         {
-            IOManager.TraverseDirectory(@"E:\BashSoft\StoryMode\BashSoft");
+            StudentsRepository.InitializeData();
+            StudentsRepository.GetAllStudentsFromCourse("Unity");
+            StudentsRepository.GetStudentsScoresFromCourse("Unity", "Ivan");
         }
     }
 }
