@@ -5,8 +5,8 @@
         public static void Main()
         {
             StudentsRepository.InitializeData();
-            StudentsRepository.GetAllStudentsFromCourse("");
-            StudentsRepository.GetStudentsScoresFromCourse("", "");
+            StudentsRepository.GetAllStudentsFromCourse("Unity");
+            StudentsRepository.GetStudentsScoresFromCourse("Unity", "Ivan");
         }
     }
 }
