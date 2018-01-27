@@ -1,12 +1,10 @@
-﻿using System;
-
-namespace SimpleJudge
+﻿namespace SimpleJudge
 {
     public class StartUp
     {
         public static void Main()
         {
-            Tester.CompareContent(@"actualPath", @"expectedPath");
+            //Tester.CompareContent(@"D:\test2.txt" , @"D:\test3.txt");
         }
     }
 }
