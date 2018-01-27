@@ -4,7 +4,8 @@
     {
         public static void Main()
         {
-            //Tester.CompareContent(@"D:\test2.txt" , @"D:\test3.txt");
+            Tester.CompareContent(@"C:\Users\aisht\Desktop\BashSoft-Resources\actual.txt",
+                @"C:\Users\aisht\Desktop\BashSoft-Resources\expected.txt");
         }
     }
 }

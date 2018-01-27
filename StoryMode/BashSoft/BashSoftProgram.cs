@@ -11,10 +11,14 @@ namespace BashSoft
             //StudentsRepository.GetStudentsScoresFromCourse("Unity", "Ivan");
 
             //IOManager.CreateDirectoryInCurrentFolder("My Folder");
-            //IOManager.TraverseDirectory(0);
 
-            //IOManager.ChangeCurrentDirectoryRelative("..");
-            //IOManager.TraverseDirectory(2); // depth
+            //IOManager.ChangeCurrentDirectoryRelative(@"..");
+
+
+            // IOManager.ChangeCurrentDirectoryAbsolute(@"..");
+            //IOManager.TraverseDirectory(0); // depth
+
+            //IOManager.CreateDirectoryInCurrentFolder("*d");
         }
     }
 }
