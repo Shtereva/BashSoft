@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BashSoft
+﻿namespace BashSoft
 {
     public class BashSoftProgram
     {
@@ -19,6 +17,8 @@ namespace BashSoft
             //IOManager.TraverseDirectory(0); // depth
 
             //IOManager.CreateDirectoryInCurrentFolder("*d");
+            
+            InputReader.StartReadingCommands();
         }
     }
 }

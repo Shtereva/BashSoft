@@ -36,6 +36,9 @@ namespace BashSoft
                     foreach (string directoryPath in Directory.GetDirectories(currentPath))
                     {
                         subFolders.Enqueue(directoryPath);
+                        int indexOfLastSlash = directoryPath.LastIndexOf("\\");
+                        string directoryName = directoryPath.Substring(indexOfLastSlash);
+                        OutputWriter.WriteMessageOnNewLine($"{new string('-', indexOfLastSlash)}{directoryName}");
                     }
                 }
                 catch (UnauthorizedAccessException)
