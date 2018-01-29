@@ -60,13 +60,13 @@ namespace BashSoft
 
                 for (int line = 0; line < allInputLines.Length; line++)
                 {
-                    if (!string.IsNullOrEmpty(allInputLines[line]) && regx.IsMatch(allInputLines[line]))
+                    if (!String.IsNullOrEmpty(allInputLines[line]) && regx.IsMatch(allInputLines[line]))
                     {
                         var match = regx.Match(allInputLines[line]);
                         string course = match.Groups["course"].Value;
                         string student = match.Groups["username"].Value;
                         int mark;
-                        bool hasParsed = int.TryParse(match.Groups["score"].Value, out mark);
+                        bool hasParsed = Int32.TryParse(match.Groups["score"].Value, out mark);
 
                         if (hasParsed && mark >= 0 && mark <= 100)
                         {
@@ -132,6 +132,32 @@ namespace BashSoft
             }
 
             return false;
+        }
+
+        public static void FilterAndTake(string courseName, string givenFilter, int? studentsToTake = null)
+        {
+            if (IsQueryForCoursePossible(courseName))
+            {
+                if (studentsToTake == null)
+                {
+                    studentsToTake = studentsByCourse[courseName].Count;
+                }
+
+                RepositoryFilters.FilterAndTake(studentsByCourse[courseName], givenFilter, studentsToTake.Value);
+            }
+        }
+
+        public static void OrderAndTake(string courseName, string comparison, int? studentsToTake = null)
+        {
+            if (IsQueryForCoursePossible(courseName))
+            {
+                if (studentsToTake == null)
+                {
+                    studentsToTake = studentsByCourse[courseName].Count;
+                }
+
+                RepositorySorters.OrderAndTake(studentsByCourse[courseName], comparison, studentsToTake.Value);
+            }
         }
     }
 }

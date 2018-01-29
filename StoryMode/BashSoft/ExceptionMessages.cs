@@ -28,5 +28,13 @@
         public const string InvalidCommandMessage = "The command \'{0}\' is invalid";
 
         public const string UnableToParseNumber = "The sequence you\'ve written is not a valid number.";
+
+        public const string InvalidStudentFilter = "The given filter is not one of the following: excellent/average/poor";
+
+        public const string InvalidComparisonQuery = "The comparison query you want, does not exist in the context of the current program!";
+
+        public const string InvalidTakeCommandParameter = "The take command expected does not match the format wanted!";
+
+        public const string InvalidTakeQuantityParameter = "The quantity command expected does not match the format wanted!";
     }
 }
