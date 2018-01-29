@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace BashSoft
 {
@@ -51,28 +52,36 @@ namespace BashSoft
 
             if (File.Exists(path))
             {
+                string pattern = @"(?<course>[A-Z][A-Za-z+#]*_[A-Z][a-z]{2}_\d{4})\s+(?<username>[A-Z][a-z]{0,3}\d{2}_\d{2,4})\s+(?<score>\d+)";
+
+                var regx = new Regex(pattern);
+
                 var allInputLines = File.ReadAllLines(path);
 
                 for (int line = 0; line < allInputLines.Length; line++)
                 {
-                    if (!string.IsNullOrEmpty(allInputLines[line]))
+                    if (!string.IsNullOrEmpty(allInputLines[line]) && regx.IsMatch(allInputLines[line]))
                     {
-                        var tokens = allInputLines[line].Split(' ');
-                        string course = tokens[0];
-                        string student = tokens[1];
-                        int mark = int.Parse(tokens[2]);
+                        var match = regx.Match(allInputLines[line]);
+                        string course = match.Groups["course"].Value;
+                        string student = match.Groups["username"].Value;
+                        int mark;
+                        bool hasParsed = int.TryParse(match.Groups["score"].Value, out mark);
 
-                        if (!studentsByCourse.ContainsKey(course))
+                        if (hasParsed && mark >= 0 && mark <= 100)
                         {
-                            studentsByCourse[course] = new Dictionary<string, List<int>>();
-                        }
+                            if (!studentsByCourse.ContainsKey(course))
+                            {
+                                studentsByCourse[course] = new Dictionary<string, List<int>>();
+                            }
 
-                        if (!studentsByCourse[course].ContainsKey(student))
-                        {
-                            studentsByCourse[course][student] = new List<int>();
-                        }
+                            if (!studentsByCourse[course].ContainsKey(student))
+                            {
+                                studentsByCourse[course][student] = new List<int>();
+                            }
 
-                        studentsByCourse[course][student].Add(mark);
+                            studentsByCourse[course][student].Add(mark);
+                        }
                     }
                 }
 
