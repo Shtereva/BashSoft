@@ -5,27 +5,45 @@ using System.Text.RegularExpressions;
 
 namespace BashSoft
 {
-    public static class StudentsRepository
+    public class StudentsRepository
     {
-        public static bool isDataInitialized = false;
-        private static Dictionary<string, Dictionary<string, List<int>>> studentsByCourse;
+        private bool isDataInitialized = false;
+        private Dictionary<string, Dictionary<string, List<int>>> studentsByCourse;
+        private RepositoryFilter filter;
+        private RepositorySorter sorter;
 
-        public static void InitializeData(string fileName)
+        public StudentsRepository(RepositoryFilter filter, RepositorySorter sorter)
         {
-            if (!isDataInitialized)
-            {
-                OutputWriter.WriteMessageOnNewLine("Redaing data");
-                studentsByCourse = new Dictionary<string, Dictionary<string, List<int>>>();
-                ReadData(fileName);
-            }
+            this.studentsByCourse = new Dictionary<string, Dictionary<string, List<int>>>();
+            this.sorter = sorter;
+            this.filter = filter;
 
-            else
-            {
-                OutputWriter.WriteMessageOnNewLine(ExceptionMessages.DataAlreadyInitializedException);
-            }
         }
 
-        public static void GetStudentsScoresFromCourse(string courseName, string username)
+        public void LoadData(string fileName)
+        {
+            if (this.isDataInitialized)
+            {
+                OutputWriter.DisplayException(ExceptionMessages.DataAlreadyInitializedException);
+                return;
+            }
+                
+            OutputWriter.WriteMessageOnNewLine("Redaing data");
+            ReadData(fileName);
+        }
+
+        public void UnloadData()
+        {
+            if (!this.isDataInitialized)
+            {
+                OutputWriter.DisplayException(ExceptionMessages.DataNotInitializedExceptionMessage);
+            }
+
+            this.studentsByCourse = new Dictionary<string, Dictionary<string, List<int>>>();
+            this.isDataInitialized = false;
+        }
+
+        public void GetStudentsScoresFromCourse(string courseName, string username)
         {
             if (IsQueryForStudentPossiblе(courseName, username))
             {
@@ -33,7 +51,7 @@ namespace BashSoft
             }
         }
 
-        public static void GetAllStudentsFromCourse(string courseName)
+        public void GetAllStudentsFromCourse(string courseName)
         {
             if (IsQueryForCoursePossible(courseName))
             {
@@ -46,7 +64,7 @@ namespace BashSoft
             }
         }
 
-        private static void ReadData(string fileName)
+        private void ReadData(string fileName)
         {
             string path = SessionData.currentPath + "\\" + fileName;
 
@@ -95,7 +113,7 @@ namespace BashSoft
             }
         }
 
-        private static bool IsQueryForCoursePossible(string courseName)
+        private bool IsQueryForCoursePossible(string courseName)
         {
             if (isDataInitialized)
             {
@@ -106,20 +124,20 @@ namespace BashSoft
 
                 else
                 {
-                    OutputWriter.WriteMessageOnNewLine(ExceptionMessages.InexistingCourseInDataBase);
+                    OutputWriter.DisplayException(ExceptionMessages.InexistingCourseInDataBase);
                 }
 
             }
 
             else
             {
-                OutputWriter.WriteMessageOnNewLine(ExceptionMessages.DataNotInitializedExceptionMessage);
+                OutputWriter.DisplayException(ExceptionMessages.DataNotInitializedExceptionMessage);
             }
 
             return false;
         }
 
-        private static bool IsQueryForStudentPossiblе(string courseName, string studentsUserName)
+        private bool IsQueryForStudentPossiblе(string courseName, string studentsUserName)
         {
             if (IsQueryForCoursePossible(courseName) && studentsByCourse[courseName].ContainsKey(studentsUserName))
             {
@@ -128,13 +146,13 @@ namespace BashSoft
 
             else
             {
-                OutputWriter.WriteMessageOnNewLine(ExceptionMessages.InexistingStudentInDataBase);
+                OutputWriter.DisplayException(ExceptionMessages.InexistingStudentInDataBase);
             }
 
             return false;
         }
 
-        public static void FilterAndTake(string courseName, string givenFilter, int? studentsToTake = null)
+        public void FilterAndTake(string courseName, string givenFilter, int? studentsToTake = null)
         {
             if (IsQueryForCoursePossible(courseName))
             {
@@ -143,11 +161,11 @@ namespace BashSoft
                     studentsToTake = studentsByCourse[courseName].Count;
                 }
 
-                RepositoryFilters.FilterAndTake(studentsByCourse[courseName], givenFilter, studentsToTake.Value);
+                this.filter.FilterAndTake(studentsByCourse[courseName], givenFilter, studentsToTake.Value);
             }
         }
 
-        public static void OrderAndTake(string courseName, string comparison, int? studentsToTake = null)
+        public void OrderAndTake(string courseName, string comparison, int? studentsToTake = null)
         {
             if (IsQueryForCoursePossible(courseName))
             {
@@ -156,7 +174,7 @@ namespace BashSoft
                     studentsToTake = studentsByCourse[courseName].Count;
                 }
 
-                RepositorySorters.OrderAndTake(studentsByCourse[courseName], comparison, studentsToTake.Value);
+                this.sorter.OrderAndTake(studentsByCourse[courseName], comparison, studentsToTake.Value);
             }
         }
     }
