@@ -44,5 +44,7 @@
         public const string InvalidNumberOfScores = "The number of scores for the given course is greater than the possible.";
 
         public const string InvalidScore = "The number for the score you've entered is not in the range of 0 - 100";
+
+        public const string NullOrEmptyValue = "The value of the variable CANNOT be null or empty!";
     }
 }

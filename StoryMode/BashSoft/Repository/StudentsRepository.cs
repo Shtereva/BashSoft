@@ -10,7 +10,6 @@ namespace BashSoft
     public class StudentsRepository
     {
         private bool isDataInitialized = false;
-        private Dictionary<string, Dictionary<string, List<int>>> studentsByCourse;
         private Dictionary<string, Course> courses;
         private Dictionary<string, Student> students;
         private RepositoryFilter filter;
@@ -18,7 +17,6 @@ namespace BashSoft
 
         public StudentsRepository(RepositoryFilter filter, RepositorySorter sorter)
         {
-            this.studentsByCourse = new Dictionary<string, Dictionary<string, List<int>>>();
             this.sorter = sorter;
             this.filter = filter;
 
@@ -28,8 +26,7 @@ namespace BashSoft
         {
             if (this.isDataInitialized)
             {
-                OutputWriter.DisplayException(ExceptionMessages.DataAlreadyInitializedException);
-                return;
+                throw new ArgumentException(ExceptionMessages.DataAlreadyInitializedException);
             }
                 
             this.students = new Dictionary<string, Student>();
@@ -42,10 +39,9 @@ namespace BashSoft
         {
             if (!this.isDataInitialized)
             {
-                OutputWriter.DisplayException(ExceptionMessages.DataNotInitializedExceptionMessage);
+                throw new ArgumentException(ExceptionMessages.DataNotInitializedExceptionMessage);
             }
 
-            this.studentsByCourse = new Dictionary<string, Dictionary<string, List<int>>>();
             this.students = null;
             this.courses = null;
             this.isDataInitialized = false;
@@ -55,7 +51,7 @@ namespace BashSoft
         {
             if (IsQueryForStudentPossiblе(courseName, username))
             {
-                OutputWriter.PrintStudent(new KeyValuePair<string, double>(username, this.courses[courseName].studentsByName[username].marksByCourseName[courseName]));
+                OutputWriter.PrintStudent(new KeyValuePair<string, double>(username, this.courses[courseName].StudentsByName[username].MarksByCourseName[courseName]));
             }
         }
 
@@ -65,7 +61,7 @@ namespace BashSoft
             {
                 OutputWriter.WriteMessageOnNewLine($"{courseName}:");
 
-                foreach (var studentsMarkEntry in this.courses[courseName].studentsByName)
+                foreach (var studentsMarkEntry in this.courses[courseName].StudentsByName)
                 {
                     this.GetStudentsScoresFromCourse(courseName, studentsMarkEntry.Key);
                 }
@@ -103,6 +99,7 @@ namespace BashSoft
                             if (scores.Any(s => s > 100 || s < 0))
                             {
                                 OutputWriter.DisplayException(ExceptionMessages.InvalidScore);
+                                continue;
                             }
 
                             if (scores.Length > Course.NumberOfTasksOnExam)
@@ -143,7 +140,7 @@ namespace BashSoft
 
             else
             {
-                OutputWriter.DisplayException(ExceptionMessages.InvalidPath);
+                throw new DirectoryNotFoundException(ExceptionMessages.InvalidPath);
             }
         }
 
@@ -173,7 +170,7 @@ namespace BashSoft
 
         private bool IsQueryForStudentPossiblе(string courseName, string studentsUserName)
         {
-            if (IsQueryForCoursePossible(courseName) && this.courses[courseName].studentsByName.ContainsKey(studentsUserName))
+            if (IsQueryForCoursePossible(courseName) && this.courses[courseName].StudentsByName.ContainsKey(studentsUserName))
             {
                 return true;
             }
@@ -192,10 +189,10 @@ namespace BashSoft
             {
                 if (studentsToTake == null)
                 {
-                    studentsToTake = this.courses[courseName].studentsByName.Count;
+                    studentsToTake = this.courses[courseName].StudentsByName.Count;
                 }
 
-                var marks = this.courses[courseName].studentsByName[courseName].marksByCourseName;
+                var marks = (Dictionary<string, double>) this.courses[courseName].StudentsByName[courseName].MarksByCourseName;
                 this.filter.FilterAndTake(marks, givenFilter, studentsToTake.Value);
             }
         }
@@ -206,10 +203,10 @@ namespace BashSoft
             {
                 if (studentsToTake == null)
                 {
-                    studentsToTake = this.courses[courseName].studentsByName.Count;
+                    studentsToTake = this.courses[courseName].StudentsByName.Count;
                 }
 
-                var marks = this.courses[courseName].studentsByName[courseName].marksByCourseName;
+                var marks = (Dictionary<string, double>)this.courses[courseName].StudentsByName[courseName].MarksByCourseName;
 
                 this.sorter.OrderAndTake(marks, comparison, studentsToTake.Value);
             }
