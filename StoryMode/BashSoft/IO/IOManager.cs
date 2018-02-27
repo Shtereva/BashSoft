@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using BashSoft.Exceptions;
 
 namespace BashSoft
 {
@@ -55,9 +56,9 @@ namespace BashSoft
             {
                 Directory.CreateDirectory(path);
             }
-            catch (ArgumentException)
+            catch (InvalidPathException)
             {
-                throw new ArgumentException(ExceptionMessages.ForbiddenSymbolsContainedInName);
+                throw new InvalidPathException();
             }
         }
 
@@ -77,9 +78,9 @@ namespace BashSoft
                     string newPath = currentPath.Substring(0, indexOfLastSlash);
                     SessionData.currentPath = newPath;
                 }
-                catch (ArgumentOutOfRangeException)
+                catch (InvalidPathException)
                 {
-                   throw new ArgumentOutOfRangeException("indexOfLastSlash", ExceptionMessages.InvalidPath);
+                   throw new InvalidPathException();
                 }
             }
 
@@ -95,7 +96,7 @@ namespace BashSoft
         {
             if (!Directory.Exists(absolutePath))
             {
-                throw new DirectoryNotFoundException(ExceptionMessages.InvalidPath);
+                throw new InvalidPathException();
             }
 
             SessionData.currentPath = absolutePath;

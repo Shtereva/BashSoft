@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using BashSoft;
+using BashSoft.Exceptions;
 
 namespace BashSoft
 {
@@ -23,9 +24,9 @@ namespace BashSoft
                 PrintOutput(mismatches, hasMismatch, mismatchPath);
                 OutputWriter.WriteMessageOnNewLine("Files read!");
             }
-            catch (IOException)
+            catch (InvalidPathException ipe)
             {
-                OutputWriter.DisplayException(ExceptionMessages.InvalidPath);
+                OutputWriter.DisplayException(ipe.Message);
             }
         }
 
