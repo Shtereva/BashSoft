@@ -10,17 +10,17 @@ namespace BashSoft
         {
             if (wantedFilter == "excellent")
             {
-                FilterAndTake(studentsWithMarks, x => x >= 5, studentsToTake);
+                this.FilterAndTake(studentsWithMarks, x => x >= 5, studentsToTake);
             }
 
             else if (wantedFilter == "average")
             {
-                FilterAndTake(studentsWithMarks, x => x >= 3.5 && x < 5, studentsToTake);
+                this.FilterAndTake(studentsWithMarks, x => x >= 3.5 && x < 5, studentsToTake);
             }
 
             else if (wantedFilter == "poor")
             {
-                FilterAndTake(studentsWithMarks, x => x < 3.5, studentsToTake);
+                this.FilterAndTake(studentsWithMarks, x => x < 3.5, studentsToTake);
             }
 
             else

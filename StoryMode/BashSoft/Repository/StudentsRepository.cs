@@ -33,7 +33,7 @@ namespace BashSoft
             this.students = new Dictionary<string, Student>();
             this.courses = new Dictionary<string, Course>();
             OutputWriter.WriteMessageOnNewLine("Redaing data");
-            ReadData(fileName);
+            this.ReadData(fileName);
         }
 
         public void UnloadData()
@@ -50,15 +50,16 @@ namespace BashSoft
 
         public void GetStudentsScoresFromCourse(string courseName, string username)
         {
-            if (IsQueryForStudentPossiblе(courseName, username))
+            if (this.IsQueryForStudentPossiblе(courseName, username))
             {
-                OutputWriter.PrintStudent(new KeyValuePair<string, double>(username, this.courses[courseName].StudentsByName[username].MarksByCourseName[courseName]));
+                OutputWriter.PrintStudent(new KeyValuePair<string, double>(username,
+                    this.courses[courseName].StudentsByName[username].MarksByCourseName[courseName]));
             }
         }
 
         public void GetAllStudentsFromCourse(string courseName)
         {
-            if (IsQueryForCoursePossible(courseName))
+            if (this.IsQueryForCoursePossible(courseName))
             {
                 OutputWriter.WriteMessageOnNewLine($"{courseName}:");
 
@@ -135,7 +136,7 @@ namespace BashSoft
                     }
                 }
 
-                isDataInitialized = true;
+                this.isDataInitialized = true;
                 OutputWriter.WriteMessageOnNewLine("Data read!");
             }
 
@@ -147,7 +148,7 @@ namespace BashSoft
 
         private bool IsQueryForCoursePossible(string courseName)
         {
-            if (isDataInitialized)
+            if (this.isDataInitialized)
             {
                 if (this.courses.ContainsKey(courseName))
                 {
@@ -171,7 +172,7 @@ namespace BashSoft
 
         private bool IsQueryForStudentPossiblе(string courseName, string studentsUserName)
         {
-            if (IsQueryForCoursePossible(courseName) && this.courses[courseName].StudentsByName.ContainsKey(studentsUserName))
+            if (this.IsQueryForCoursePossible(courseName) && this.courses[courseName].StudentsByName.ContainsKey(studentsUserName))
             {
                 return true;
             }
@@ -186,7 +187,7 @@ namespace BashSoft
 
         public void FilterAndTake(string courseName, string givenFilter, int? studentsToTake = null)
         {
-            if (IsQueryForCoursePossible(courseName))
+            if (this.IsQueryForCoursePossible(courseName))
             {
                 if (studentsToTake == null)
                 {
@@ -200,7 +201,7 @@ namespace BashSoft
 
         public void OrderAndTake(string courseName, string comparison, int? studentsToTake = null)
         {
-            if (IsQueryForCoursePossible(courseName))
+            if (this.IsQueryForCoursePossible(courseName))
             {
                 if (studentsToTake == null)
                 {

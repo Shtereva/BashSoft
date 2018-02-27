@@ -12,7 +12,7 @@ namespace BashSoft
 
             if (comparison == "ascending")
             {
-                PrintStudents(studentsMarks
+                this.PrintStudents(studentsMarks
                     .OrderBy(x => x.Value)
                     .Take(studentsToTake)
                     .ToDictionary(x => x.Key, y => y.Value));
@@ -20,7 +20,7 @@ namespace BashSoft
 
             else if (comparison == "descending")
             {
-                PrintStudents(studentsMarks
+                this.PrintStudents(studentsMarks
                     .OrderByDescending(x => x.Value)
                     .Take(studentsToTake)
                     .ToDictionary(x => x.Key, y => y.Value));

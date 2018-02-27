@@ -32,7 +32,7 @@ namespace BashSoft.Models
             }
         }
 
-        public IReadOnlyDictionary<string, Course> eErolledCourses => this.enrolledCourses;
+        public IReadOnlyDictionary<string, Course> ErolledCourses => this.enrolledCourses;
         public IReadOnlyDictionary<string, double> MarksByCourseName => this.marksByCourseName;
 
         public void EnrollInCourse(Course course)
@@ -57,7 +57,7 @@ namespace BashSoft.Models
                 throw new ArgumentException(ExceptionMessages.InvalidNumberOfScores);
             }
 
-            this.marksByCourseName.Add(courseName, CalculateMark(scores));
+            this.marksByCourseName.Add(courseName, this.CalculateMark(scores));
         }
 
         private double CalculateMark(int[] scores)

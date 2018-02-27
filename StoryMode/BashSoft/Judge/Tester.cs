@@ -13,13 +13,12 @@ namespace BashSoft
             {
                 OutputWriter.WriteMessageOnNewLine("Reading files...");
 
-                string mismatchPath = GetMismatchPath(expectedOutputPath);
+                string mismatchPath = this.GetMismatchPath(expectedOutputPath);
 
                 string[] actualOutputLines = File.ReadAllLines(userOutputPath);
                 string[] expectedOutputLines = File.ReadAllLines(expectedOutputPath);
 
-                bool hasMismatch;
-                string[] mismatches = GetLinesWithPossibleMismatches(actualOutputLines, expectedOutputLines, out hasMismatch);
+                string[] mismatches = this.GetLinesWithPossibleMismatches(actualOutputLines, expectedOutputLines, out bool hasMismatch);
 
                 PrintOutput(mismatches, hasMismatch, mismatchPath);
                 OutputWriter.WriteMessageOnNewLine("Files read!");
