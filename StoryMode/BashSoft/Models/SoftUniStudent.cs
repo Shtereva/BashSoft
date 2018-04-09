@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BashSoft.Contracts;
 using BashSoft.Exceptions;
 
 namespace BashSoft.Models
 {
-    public class Student
+    public class SoftUniStudent : IStudent
     {
         private string userName;
-        private Dictionary<string, Course> enrolledCourses;
+        private Dictionary<string, ICourse> enrolledCourses;
         private Dictionary<string, double> marksByCourseName;
 
-        public Student(string userName)
+        public SoftUniStudent(string userName)
         {
             this.UserName = userName;
-            this.enrolledCourses = new Dictionary<string, Course>();
+            this.enrolledCourses = new Dictionary<string, ICourse>();
             this.marksByCourseName = new Dictionary<string, double>();
         }
 
@@ -32,10 +33,10 @@ namespace BashSoft.Models
             }
         }
 
-        public IReadOnlyDictionary<string, Course> ErolledCourses => this.enrolledCourses;
+        public IReadOnlyDictionary<string, ICourse> ErolledCourses => this.enrolledCourses;
         public IReadOnlyDictionary<string, double> MarksByCourseName => this.marksByCourseName;
 
-        public void EnrollInCourse(Course course)
+        public void EnrollInCourse(ICourse course)
         {
             if (this.enrolledCourses.ContainsKey(course.Name))
             {
@@ -52,7 +53,7 @@ namespace BashSoft.Models
                 throw new CourseNotFoundException();
             }
 
-            if (scores.Length > Course.NumberOfTasksOnExam)
+            if (scores.Length > SoftUniCourse.NumberOfTasksOnExam)
             {
                 throw new ArgumentException(ExceptionMessages.InvalidNumberOfScores);
             }
@@ -63,7 +64,7 @@ namespace BashSoft.Models
         private double CalculateMark(int[] scores)
         {
             double percentageOfSolvedExams =
-                scores.Sum() / (double) (Course.NumberOfTasksOnExam * Course.MaxScoreOnExamTask);
+                scores.Sum() / (double) (SoftUniCourse.NumberOfTasksOnExam * SoftUniCourse.MaxScoreOnExamTask);
 
             double mark = percentageOfSolvedExams * 4 + 2;
             return mark;

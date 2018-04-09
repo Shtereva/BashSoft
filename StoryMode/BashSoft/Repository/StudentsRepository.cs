@@ -3,20 +3,23 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using BashSoft.Contracts;
+using BashSoft.Contracts.Repo;
+using BashSoft.Contracts.Repo.Database;
 using BashSoft.Exceptions;
 using BashSoft.Models;
 
 namespace BashSoft
 {
-    public class StudentsRepository
+    public class StudentsRepository : IDatabase
     {
         private bool isDataInitialized = false;
-        private Dictionary<string, Course> courses;
-        private Dictionary<string, Student> students;
-        private RepositoryFilter filter;
-        private RepositorySorter sorter;
+        private Dictionary<string, ICourse> courses;
+        private Dictionary<string, IStudent> students;
+        private IDataFilter filter;
+        private IDataSorter sorter;
 
-        public StudentsRepository(RepositoryFilter filter, RepositorySorter sorter)
+        public StudentsRepository(IDataFilter filter, IDataSorter sorter)
         {
             this.sorter = sorter;
             this.filter = filter;
@@ -30,8 +33,8 @@ namespace BashSoft
                 throw new ArgumentException(ExceptionMessages.DataAlreadyInitializedException);
             }
                 
-            this.students = new Dictionary<string, Student>();
-            this.courses = new Dictionary<string, Course>();
+            this.students = new Dictionary<string, IStudent>();
+            this.courses = new Dictionary<string, ICourse>();
             OutputWriter.WriteMessageOnNewLine("Redaing data");
             this.ReadData(fileName);
         }
@@ -104,7 +107,7 @@ namespace BashSoft
                                 continue;
                             }
 
-                            if (scores.Length > Course.NumberOfTasksOnExam)
+                            if (scores.Length > SoftUniCourse.NumberOfTasksOnExam)
                             {
                                 OutputWriter.DisplayException(ExceptionMessages.InvalidNumberOfScores);
                                 continue;
@@ -112,12 +115,12 @@ namespace BashSoft
 
                             if (!this.students.ContainsKey(studentName))
                             {
-                                this.students.Add(studentName, new Student(studentName));
+                                this.students.Add(studentName, new SoftUniStudent(studentName));
                             }
 
                             if (!this.courses.ContainsKey(courseName))
                             {
-                                this.courses.Add(courseName, new Course(courseName));
+                                this.courses.Add(courseName, new SoftUniCourse(courseName));
                             }
 
                             var course = this.courses[courseName];

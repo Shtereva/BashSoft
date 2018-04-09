@@ -1,18 +1,20 @@
 ﻿using System;
+using BashSoft.Contracts;
+using BashSoft.Contracts.Repo.Database;
 using BashSoft.Exceptions;
 
 namespace BashSoft.IO.Commands
 {
-    public abstract class Command
+    public abstract class Command : IExecutable
     {
         private string input;
         private string[] data;
 
-        private Tester judge;
-        private StudentsRepository repository;
-        private IOManager inputOutputManager;
+        private IContentComparer judge;
+        private IDatabase repository;
+        private IDirectoryManager inputOutputManager;
 
-        protected Command(string input, string[] data, Tester judge, StudentsRepository repository, IOManager inputOutputManager)
+        protected Command(string input, string[] data, IContentComparer judge, IDatabase repository, IDirectoryManager inputOutputManager)
         {
             this.judge = judge;
             this.repository = repository;
@@ -47,9 +49,9 @@ namespace BashSoft.IO.Commands
             }
         }
 
-        protected Tester Judge => this.judge;
-        protected StudentsRepository Repository => this.repository;
-        protected IOManager InputOutputManager => this.inputOutputManager;
+        protected IContentComparer Judge => this.judge;
+        protected IDatabase Repository => this.repository;
+        protected IDirectoryManager InputOutputManager => this.inputOutputManager;
 
         public abstract void Execute();
     }

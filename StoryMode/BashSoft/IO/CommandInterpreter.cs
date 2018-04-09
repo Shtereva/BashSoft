@@ -1,17 +1,19 @@
 ﻿using System;
 using System.IO;
+using BashSoft.Contracts;
+using BashSoft.Contracts.Repo.Database;
 using BashSoft.Exceptions;
 using BashSoft.IO.Commands;
 
 namespace BashSoft
 {
-    public class CommandInterpreter
+    public class CommandInterpreter : IInterpreter
     {
-        private Tester judge;
-        private StudentsRepository repository;
-        private IOManager inputOutputManager;
+        private IContentComparer judge;
+        private IDatabase repository;
+        private IDirectoryManager inputOutputManager;
 
-        public CommandInterpreter(Tester judge, StudentsRepository repository, IOManager inputOutputManager)
+        public CommandInterpreter(IContentComparer judge, IDatabase repository, IDirectoryManager inputOutputManager)
         {
             this.judge = judge;
             this.repository = repository;
@@ -25,7 +27,7 @@ namespace BashSoft
 
             try
             {
-                Command command = this.ParseCommand(input, data, commandName);
+                IExecutable command = this.ParseCommand(input, data, commandName);
                 command.Execute();
 
             }
@@ -51,7 +53,7 @@ namespace BashSoft
             }
         }
 
-        private Command ParseCommand(string input, string[] data, string command)
+        private IExecutable ParseCommand(string input, string[] data, string command)
         {
             switch (command)
             {
