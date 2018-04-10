@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using BashSoft.Contracts;
 using BashSoft.Contracts.Repo;
 using BashSoft.Contracts.Repo.Database;
+using BashSoft.DataStructures;
 using BashSoft.Exceptions;
 using BashSoft.Models;
 
@@ -71,6 +72,24 @@ namespace BashSoft
                     this.GetStudentsScoresFromCourse(courseName, studentsMarkEntry.Key);
                 }
             }
+        }
+
+        public ISimpleOrderedBag<ICourse> GetAllCoursesSorted(IComparer<ICourse> cmp)
+        {
+            var sortedCourses = new SimpleSortedList<ICourse>(cmp);
+
+            sortedCourses.AddAll(this.courses.Values);
+
+            return sortedCourses;
+        }
+
+        public ISimpleOrderedBag<IStudent> GettAllStudentsSorted(IComparer<IStudent> cmp)
+        {
+            var sortedStudents = new SimpleSortedList<IStudent>(cmp);
+
+            sortedStudents.AddAll(this.students.Values);
+
+            return sortedStudents;
         }
 
         private void ReadData(string fileName)

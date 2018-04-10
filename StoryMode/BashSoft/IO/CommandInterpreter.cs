@@ -83,6 +83,8 @@ namespace BashSoft
                     return new PrintOrderedStudentsCommand(input, data, this.judge, this.repository, this.inputOutputManager);
                 case "dropDb":
                     return new DropDatabaseCommand(input, data, this.judge, this.repository, this.inputOutputManager);
+                case "display":
+                    return new DisplayCommand(input, data, this.judge, this.repository, this.inputOutputManager);
                 case "download":
 
                     break;
