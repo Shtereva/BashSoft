@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using BashSoft.Contracts;
 using BashSoft.Contracts.Repo.Database;
-using BashSoft.Exceptions;
+using BashSoft.IO.Attributes;
 using BashSoft.IO.Commands;
 
 namespace BashSoft
@@ -55,47 +57,42 @@ namespace BashSoft
 
         private IExecutable ParseCommand(string input, string[] data, string command)
         {
-            switch (command)
+            var constructorParameters = new object[] { input, data };
+
+            Type typeOfCommand = Assembly
+                .GetExecutingAssembly()
+                .GetTypes()
+                .FirstOrDefault(t => t.GetCustomAttributes<AliasAttribute>()
+                    .Where(a => a.Equals(command))
+                    .ToArray().Length > 0);
+
+            var interpreterType = typeof(CommandInterpreter);
+
+            Command exe = (Command) Activator.CreateInstance(typeOfCommand, constructorParameters);
+
+            var fieldsOfCommand = typeOfCommand
+                .GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
+
+            var fieldsOfInterpreter = interpreterType
+                .GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
+
+            foreach (var fieldOfCommand in fieldsOfCommand)
             {
-                case "open":
-                    return new OpenFileCommand(input, data, this.judge, this.repository, this.inputOutputManager);
-                case "mkdir":
-                    return new MakeDirectoryCommand(input, data, this.judge, this.repository, this.inputOutputManager);
-                case "ls":
-                    return new TraverseFoldersCommand(input, data, this.judge, this.repository, this.inputOutputManager);
-                case "cmp":
-                    return new CompareFilesCommand(input, data, this.judge, this.repository, this.inputOutputManager);
-                case "cdRel":
-                    return new ChangeRelativePathCommand(input, data, this.judge, this.repository, this.inputOutputManager);
-                case "cdAbs":
-                    return new ChangeAbsolutePathCommand(input, data, this.judge, this.repository, this.inputOutputManager);
-                case "readDb":
-                    return new ReadDatabaseCommand(input, data, this.judge, this.repository, this.inputOutputManager);
-                case "help":
-                    return new GetHelpCommand(input, data, this.judge, this.repository, this.inputOutputManager);
-                case "show":
-                    return new ShowCourseCommand(input, data, this.judge, this.repository, this.inputOutputManager);
-                case "filter":
-                    return new PrintFilteredStudentsCommand(input, data, this.judge, this.repository, this.inputOutputManager);
-                case "order":
-                    return new PrintOrderedStudentsCommand(input, data, this.judge, this.repository, this.inputOutputManager);
-                case "decOrder":
-                    return new PrintOrderedStudentsCommand(input, data, this.judge, this.repository, this.inputOutputManager);
-                case "dropDb":
-                    return new DropDatabaseCommand(input, data, this.judge, this.repository, this.inputOutputManager);
-                case "display":
-                    return new DisplayCommand(input, data, this.judge, this.repository, this.inputOutputManager);
-                case "download":
+                var attribute = fieldOfCommand.GetCustomAttribute<InjectAttribute>();
 
-                    break;
-                case "downloadAsync":
+                if (attribute != null)
+                {
+                    if (fieldsOfInterpreter.Any(f => f.FieldType == fieldOfCommand.FieldType))
+                    {
+                        var fieldValueOfInterpreter =
+                            fieldsOfInterpreter.First(f => f.FieldType == fieldOfCommand.FieldType)
+                            .GetValue(this);
 
-                    break;
-                default:
-                    throw new InvalidCommandException(input);
+                        fieldOfCommand.SetValue(exe, fieldValueOfInterpreter);
+                    }
+                }
             }
-
-            return null;
+            return exe;
         }
     }
 }

@@ -1,12 +1,16 @@
 ﻿using BashSoft.Contracts;
-using BashSoft.Contracts.Repo.Database;
 using BashSoft.Exceptions;
+using BashSoft.IO.Attributes;
 
 namespace BashSoft.IO.Commands
 {
-    class CompareFilesCommand : Command
+    [Alias("cmp")]
+    public class CompareFilesCommand : Command
     {
-        public CompareFilesCommand(string input, string[] data, IContentComparer judge, IDatabase repository, IDirectoryManager inputOutputManager) : base(input, data, judge, repository, inputOutputManager)
+        [Inject]
+        private IContentComparer judge;
+        public CompareFilesCommand(string input, string[] data) 
+            : base(input, data)
         {
         }
 
@@ -20,7 +24,7 @@ namespace BashSoft.IO.Commands
             string firstPath = this.Data[1];
             string secondPath = this.Data[2];
 
-            this.Judge.CompareContent(firstPath, secondPath);
+            this.judge.CompareContent(firstPath, secondPath);
         }
     }
 }

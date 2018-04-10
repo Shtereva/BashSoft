@@ -1,6 +1,5 @@
 ﻿using System;
 using BashSoft.Contracts;
-using BashSoft.Contracts.Repo.Database;
 using BashSoft.Exceptions;
 
 namespace BashSoft.IO.Commands
@@ -10,15 +9,8 @@ namespace BashSoft.IO.Commands
         private string input;
         private string[] data;
 
-        private IContentComparer judge;
-        private IDatabase repository;
-        private IDirectoryManager inputOutputManager;
-
-        protected Command(string input, string[] data, IContentComparer judge, IDatabase repository, IDirectoryManager inputOutputManager)
+        protected Command(string input, string[] data)
         {
-            this.judge = judge;
-            this.repository = repository;
-            this.inputOutputManager = inputOutputManager;
             this.Input = input;
             this.Data = data;
         }
@@ -48,10 +40,6 @@ namespace BashSoft.IO.Commands
                 this.data = value;
             }
         }
-
-        protected IContentComparer Judge => this.judge;
-        protected IDatabase Repository => this.repository;
-        protected IDirectoryManager InputOutputManager => this.inputOutputManager;
 
         public abstract void Execute();
     }

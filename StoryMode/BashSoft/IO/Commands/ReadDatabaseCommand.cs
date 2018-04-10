@@ -1,12 +1,17 @@
-﻿using BashSoft.Contracts;
-using BashSoft.Contracts.Repo.Database;
+﻿using BashSoft.Contracts.Repo.Database;
 using BashSoft.Exceptions;
+using BashSoft.IO.Attributes;
 
 namespace BashSoft.IO.Commands
 {
+    [Alias("readDb")]
     public class ReadDatabaseCommand : Command
     {
-        public ReadDatabaseCommand(string input, string[] data, IContentComparer judge, IDatabase repository, IDirectoryManager inputOutputManager) : base(input, data, judge, repository, inputOutputManager)
+        [Inject]
+        private IDatabase repository;
+
+        public ReadDatabaseCommand(string input, string[] data)
+            : base(input, data)
         {
         }
 
@@ -18,7 +23,7 @@ namespace BashSoft.IO.Commands
             }
 
             string fileName = this.Data[1];
-            this.Repository.LoadData(fileName);
+            this.repository.LoadData(fileName);
         }
     }
 }
